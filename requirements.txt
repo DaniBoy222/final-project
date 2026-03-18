@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 opencv-python
 numpy
 face-recognition
@@ -6,3 +7,13 @@ imutils
 ultralytics
 opencv-python
 deepface
+=======
+opencv-python
+numpy
+face-recognition
+imutils
+# Use Python 3.12 for deepface (TensorFlow not yet available for 3.14)
+ultralytics
+opencv-python
+deepface
+>>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7
