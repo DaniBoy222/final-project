@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Security Monitor Script
 
 This project provides a simple security camera script that:
@@ -64,7 +63,6 @@ python security_monitor.py
 - **Face recognition**: uses the `face_recognition` library to encode faces and compare them to encodings for images in `known_faces`.
 - **Email alerts**: if the best match is not good enough, the face is treated as **Unknown** and an alert email with the face image attached is sent (rate-limited by a cooldown timer).
 
-=======
 ## Security Monitor Script
 
 This project provides a simple security camera script that:
@@ -130,4 +128,3 @@ python security_monitor.py
 - **Face recognition**: uses the `face_recognition` library to encode faces and compare them to encodings for images in `known_faces`.
 - **Email alerts**: if the best match is not good enough, the face is treated as **Unknown** and an alert email with the face image attached is sent (rate-limited by a cooldown timer).
 
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7

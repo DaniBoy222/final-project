@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 Movement Classifier - YOUR AI
 Decides if detected movement is natural or unnatural based on your analysis
@@ -70,7 +69,6 @@ if __name__ == "__main__":
     classification = classify_movement("frame1.jpg", "frame2.jpg")
     print(f"Movement classification: {classification}")
 
-=======
 """
 Movement Classifier - YOUR AI
 Decides if detected movement is natural or unnatural based on your analysis
@@ -142,4 +140,3 @@ if __name__ == "__main__":
     classification = classify_movement("frame1.jpg", "frame2.jpg")
     print(f"Movement classification: {classification}")
 
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7

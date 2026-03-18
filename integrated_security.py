@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 Integrated Security Monitor
 
@@ -345,7 +344,6 @@ if __name__ == "__main__":
         recipient_email=RECIPIENT_EMAIL,
     )
 
-=======
 """
 Integrated Security Monitor
 
@@ -692,4 +690,3 @@ if __name__ == "__main__":
         recipient_email=RECIPIENT_EMAIL,
     )
 
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7

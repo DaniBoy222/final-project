@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 opencv-python
 numpy
 face-recognition
@@ -7,7 +6,6 @@ imutils
 ultralytics
 opencv-python
 deepface
-=======
 opencv-python
 numpy
 face-recognition
@@ -16,4 +14,3 @@ imutils
 ultralytics
 opencv-python
 deepface
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7

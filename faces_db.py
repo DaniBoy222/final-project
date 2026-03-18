@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 faces_db.py
 
@@ -128,7 +127,6 @@ if __name__ == "__main__":
         for f in faces:
             print(f" - {f['name']} ({f['image_path']}) email={f.get('email')}")
 
-=======
 """
 faces_db.py
 
@@ -258,4 +256,3 @@ if __name__ == "__main__":
         for f in faces:
             print(f" - {f['name']} ({f['image_path']}) email={f.get('email')}")
 
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7
