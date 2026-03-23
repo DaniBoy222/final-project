@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 Frame Difference Detection
 Finds differences between two frames and returns pixel differences
@@ -122,7 +121,6 @@ if __name__ == "__main__":
     has_movement = check_if_movement_happened("frame1.jpg", "frame2.jpg")
     print(f"Movement detected: {has_movement}")
 
-=======
 """
 Frame Difference Detection
 Finds differences between two frames and returns pixel differences
@@ -246,4 +244,3 @@ if __name__ == "__main__":
     has_movement = check_if_movement_happened("frame1.jpg", "frame2.jpg")
     print(f"Movement detected: {has_movement}")
 
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7

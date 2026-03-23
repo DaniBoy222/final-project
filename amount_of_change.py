@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 Amount of Change Calculation
 Calculates how many pixels changed between two frames
@@ -59,7 +58,6 @@ if __name__ == "__main__":
     pixel_count = calculate_amount_of_change("frame1.jpg", "frame2.jpg", 
                                             threshold=30, return_percentage=False)
     print(f"Number of changed pixels: {pixel_count}")
-=======
 """
 Amount of Change Calculation
 Calculates how many pixels changed between two frames
@@ -120,4 +118,3 @@ if __name__ == "__main__":
     pixel_count = calculate_amount_of_change("frame1.jpg", "frame2.jpg", 
                                             threshold=30, return_percentage=False)
     print(f"Number of changed pixels: {pixel_count}")
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7

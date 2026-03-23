@@ -6,11 +6,3 @@ imutils
 ultralytics
 opencv-python
 deepface
-opencv-python
-numpy
-face-recognition
-imutils
-# Use Python 3.12 for deepface (TensorFlow not yet available for 3.14)
-ultralytics
-opencv-python
-deepface

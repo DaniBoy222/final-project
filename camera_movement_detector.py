@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 Camera Movement Detector
 Takes pictures from connected camera and detects movement using YOUR AI logic
@@ -132,7 +131,6 @@ if __name__ == "__main__":
         min_change_percentage=0.7  # Slightly increased minimum change required
     )
 
-=======
 """
 Camera Movement Detector
 Takes pictures from connected camera and detects movement using YOUR AI logic
@@ -266,4 +264,3 @@ if __name__ == "__main__":
         min_change_percentage=0.7  # Slightly increased minimum change required
     )
 
->>>>>>> 8642a2efbfc84bdb1545ee2dc104b2bbbba5dbd7
