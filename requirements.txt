@@ -1,6 +1,16 @@
+<<<<<<< HEAD
 numpy
 imutils
 # Use Python 3.12 for deepface (TensorFlow not yet available for 3.14)
 ultralytics
 opencv-python
 deepface
+=======
+opencv-python
+numpy
+imutils
+# Use Python 3.12 for deepface (TensorFlow not yet available for 3.14)
+ultralytics
+opencv-python
+deepface
+>>>>>>> 061129bf5373d3d3bd7c7199b974fd147dbd1c84
