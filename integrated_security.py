@@ -17,6 +17,8 @@ Reuses:
 """
 
 import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import tensorflow as tf
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -52,7 +54,7 @@ def _load_face_detection_module():
     return module
 
 
-def load_known_face_paths(known_faces_dir: str = "known_faces"):
+def load_known_face_paths(known_faces_dir: str = "pics"):
     """
     Treat a folder of images as your "database" of known faces.
     Each image file name (without extension) is the person's name.
@@ -103,71 +105,82 @@ def identify_face_against_database(face_image_bgr, known_face_paths, tolerance: 
     return best_name, best_conf, is_known
 
 
-def send_alert_email_with_face(
+def send_alert_email_with_face (
     face_image_bgr,
-    smtp_user: str,
-    smtp_password: str,
-    sender_email: str,
-    recipient_email: str,
-    subject: str = "Security Alert: Unknown Person Detected",
+    smtp_user,
+    smtp_password,
+    sender_email,
+    recipient_email,
+    subject="Security Alert: Unknown Face Detected"
 ):
     """
-    Send an email via Gmail with the face image attached.
-    Reuses the same approach as your existing gmail.py, but as a function.
+    Send an email with the given face image attached, using Gmail SMTP.
     """
+    sender_email = "dani.mantin@gmail.com"       # your Gmail address
+    receiver_email = "danielmantin678@gmail.com" # recipient
+    password = "zoca rtxv joji uvyf"         # Gmail App Password
+    subject = "Camera Capture Test"
+    # -----------------------------
+
+    # 2. Encode the frame to PNG in memory
     success, buffer = cv2.imencode(".png", face_image_bgr)
     if not success:
-        print("[ERROR] Failed to encode face image for email.")
-        return
+        raise RuntimeError("Failed to encode image")
 
     image_bytes = buffer.tobytes()
-    image_cid = "unknown_face"
+    image_cid = "camera_image"
 
+    # 3. Create email message
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = sender_email
-    msg["To"] = recipient_email
+    msg["To"] = receiver_email
 
-    msg.add_alternative(
-        f"""
-<html>
-  <body>
-    <p>An unknown person was detected by your camera:</p>
-    <img src="cid:{image_cid}">
-  </body>
-</html>
-""",
-        subtype="html",
-    )
+    # HTML body referencing the image via CID
+    msg.add_alternative(f"""
+    <html>
+    <body>
+        <p>Here is the image captured from the camera:</p>
+        <img src="cid:{image_cid}">
+    </body>
+    </html>
+    """, subtype="html")
 
+    # Attach the image in memory
     msg.get_payload()[0].add_related(
         image_bytes,
         maintype="image",
         subtype="png",
-        cid=image_cid,
+        cid=image_cid
     )
 
+    # 4. Send email via Gmail SMTP
     context = ssl.create_default_context()
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(smtp_user, smtp_password)
-            server.send_message(msg)
-        print("[INFO] Alert email sent successfully.")
-    except Exception as e:
-        print(f"[ERROR] Failed to send alert email: {e}")
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(sender_email, password)
+        server.send_message(msg)
+
+    print("Email sent successfully!")
+
+import cv2
+
+def is_blurry(frame, threshold=100):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    sharpness = cv2.Laplacian(gray, cv2.CV_64F).var()
+    return sharpness < threshold
 
 
 def run_integrated_security_monitor(
-    camera_index: int = 0,
-    threshold: int = 40,
-    frame_interval: float = 0.5,
-    min_change_percentage: float = 0.5,
-    known_faces_dir: str = "known_faces",
-    alert_cooldown_seconds: int = 60,
-    smtp_user: str = "",
-    smtp_password: str = "",
-    sender_email: str = "",
-    recipient_email: str = "",
+    camera_index=0,
+    threshold=42,
+    frame_interval=0.5,
+    min_change_percentage=0.7,
+    known_faces_dir="pics",
+    alert_cooldown_seconds=0,
+    smtp_user="dani",
+    smtp_password="zoca rtxv joji uvyf",
+    sender_email="dani.mantin@gmail.com",
+    recipient_email="danielmantin678@gmail.com",
 ):
     """
     Main loop:
@@ -176,6 +189,9 @@ def run_integrated_security_monitor(
     - For each face, compares against database of known faces using your compare_faces().
     - For unknown faces, sends an email with the face image (rate-limited).
     """
+    unknown_count = 0
+    known_count = 0
+    
     # Load helper modules / data
     face_module = _load_face_detection_module()
     known_face_paths = load_known_face_paths(known_faces_dir)
@@ -263,10 +279,15 @@ def run_integrated_security_monitor(
 
                         face_roi = current_frame[y1:y2, x1:x2]
 
-                        name, conf, is_known = identify_face_against_database(
-                            face_roi, known_face_paths, tolerance=0.6
-                        )
-
+                        if is_blurry(face_roi):
+                            print("    Face detected but image is blurry, skipping recognition.")
+                            continue
+                        
+                        else:
+                            name, conf, is_known = identify_face_against_database(
+                                face_roi, known_face_paths, tolerance=0.4)
+                                
+                                
                         status = "KNOWN" if is_known else "UNKNOWN"
                         print(f"    Face: {status} (name: {name}, confidence: {conf:.2f})")
 
@@ -287,20 +308,14 @@ def run_integrated_security_monitor(
 
                         # If unknown and email configured + cooldown passed → alert
                         if not is_known and email_enabled:
-                            now = datetime.now()
-                            if now - last_alert_time >= timedelta(seconds=alert_cooldown_seconds):
-                                print("    -> Unknown face detected, sending email alert...")
-                                send_alert_email_with_face(
-                                    face_roi,
-                                    smtp_user=smtp_user,
-                                    smtp_password=smtp_password,
-                                    sender_email=sender_email,
-                                    recipient_email=recipient_email,
+                            print("    -> Unknown face detected, sending email alert...")
+                            send_alert_email_with_face(
+                                face_roi,
+                                smtp_user=smtp_user,
+                                smtp_password=smtp_password,
+                                sender_email=sender_email,
+                                recipient_email=recipient_email,
                                 )
-                                last_alert_time = now
-                            else:
-                                remaining = alert_cooldown_seconds - (now - last_alert_time).seconds
-                                print(f"    -> Alert cooldown active ({remaining}s remaining), no email sent.")
 
                     print("-" * 50)
                 else:
@@ -326,21 +341,17 @@ def run_integrated_security_monitor(
 if __name__ == "__main__":
     # TODO: Fill in your real Gmail app credentials here
     # (recommended: load from environment variables instead of hard-coding)
-    SMTP_USER = os.environ.get("GMAIL_USER", "")
-    SMTP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")
-    SENDER_EMAIL = os.environ.get("GMAIL_SENDER", SMTP_USER)
-    RECIPIENT_EMAIL = os.environ.get("GMAIL_RECIPIENT", SMTP_USER)
 
     run_integrated_security_monitor(
         camera_index=0,
         threshold=42,
         frame_interval=0.5,
         min_change_percentage=0.7,
-        known_faces_dir="known_faces",
+        known_faces_dir="pics",
         alert_cooldown_seconds=60,
-        smtp_user=SMTP_USER,
-        smtp_password=SMTP_PASSWORD,
-        sender_email=SENDER_EMAIL,
-        recipient_email=RECIPIENT_EMAIL,
+        smtp_user="dani",
+        smtp_password="zoca rtxv joji uvyf",
+        sender_email="dani.mantin@gmail.com",
+        recipient_email="danielmantin678@gmail.com",
     )
 
